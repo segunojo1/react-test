@@ -4,14 +4,17 @@ import ellipse from "../elli.png"
 import MkdSDK from "../utils/MkdSDK";
 import { useDrag, useDrop } from "react-dnd";
 import DraggableTableRow from "./DraggableTableRow";
+import { useNavigate } from "react-router-dom";
 import { ref } from "yup";
+const { dispatch} = React.useContext(AuthContext);
+import { showToast } from "../globalContext";
 
 const AdminDashboardPage = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [count, setCount] = useState(1);
 
-  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getVideos = async () => {
@@ -70,13 +73,24 @@ const AdminDashboardPage = () => {
   
     return hoverIndex;
   };
+
+  const logoutFunc = () => {
+    showToast(dispatch, "Logged in");
+          dispatch({
+            type: "LOGOUT",
+            payload: {
+              
+            },
+          });
+          navigate('/admin/login');
+  }
   
   return (
     <div className="bg-black ">
       <nav className="w-[100%] bg-black h-[96px] flex justify-between items-center">
         <h1 className=" font-black text-5xl text-white">APP</h1>
         <button className=" px-[24px] py-[12px] rounded-[40px] bg-[#9BFF00] w-[128px]" alt="logout">
-          <img src={logout} alt="" />
+          <img src={logout} alt="" onClick={logoutFunc}/>
         </button>
       </nav>
       <div className="w-[100%] bg-black h-[88px] flex justify-between items-center">
