@@ -1,7 +1,11 @@
 import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableTableRow = ({ video, index, moveItem }) => {
+const ItemTypes = {
+    ITEM: 'item',
+  };
+
+const DraggableTableRow = ({id, video, index, moveItem }) => {
     // const [{ isDragging }, drag] = useDrag({
     //     type: 'ROW',
     //     item: {type: 'ROW', index, video},
@@ -9,13 +13,11 @@ const DraggableTableRow = ({ video, index, moveItem }) => {
     //         isDragging: monitor.isDragging(),
     //     }),
     // });
-    const ItemTypes = {
-        ITEM: 'item',
-      };
+    
 
     const [, drag] = useDrag({
         type: ItemTypes.ITEM,
-        item: { index },
+        item: {id, index },
       });
     
       const [, drop] = useDrop({
@@ -31,7 +33,7 @@ const DraggableTableRow = ({ video, index, moveItem }) => {
     return (
         <tr
         ref={(node) => drag(drop(node))}
-            className={`border-t border-custom-color1 cursor-pointer transition delay-100 hover:bg-white-200 py-4 border-[1px] border-[#696969] rounded-[10px] `}
+            className={`border-t border-custom-color1 cursor-pointer transition delay-100 hover:bg-white-200 py-4 border-[1px]  border-[#696969] rounded-[10px] `}
         >
             <td className="max-w-[10vw] md:full tracking-wide font-manropeL text-base text-white px-6 py-6">
                {video.id}

@@ -27,11 +27,11 @@ const AdminDashboardPage = () => {
           page: count, 
           limit: 10
         }, 'PAGINATE');
+        // const jss = await res.json();
+        // console.log(jss);
         console.log(res);
         setVideos(res.list);
 
-        
-      
       } catch (error) {
         
       }
@@ -46,7 +46,8 @@ const AdminDashboardPage = () => {
       const newItems = [...prevItems];
       newItems.splice(dragIndex, 1);
       newItems.splice(hoverIndex, 0, draggedItem);
-      return newItems.map((item, index) => ({ ...item, row: index + 1 }));
+      console.log(newItems);
+      return newItems.map((item) => ({ ...item}));
     });
   };
 
@@ -106,9 +107,9 @@ const AdminDashboardPage = () => {
                     <p>Loading...</p>
                   ) : (
 
-                  <tbody>
+                  <tbody className="">
                     {videos?.map((video, index) => (
-                      <DraggableTableRow key={video.id} video={video} index={index} moveItem= {moveItem}/>
+                      <DraggableTableRow id={video.id} video={video} index={index} moveItem={moveItem}/>
                      ))}
                   </tbody>
                   )}
