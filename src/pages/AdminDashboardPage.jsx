@@ -2,17 +2,19 @@ import React, { useCallback, useEffect, useState } from "react";
 import logout from "../logout1.png"
 import ellipse from "../elli.png"
 import MkdSDK from "../utils/MkdSDK";
-import { useDrag, useDrop } from "react-dnd";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
 import DraggableTableRow from "./DraggableTableRow";
 import { useNavigate } from "react-router-dom";
 import { ref } from "yup";
-const { dispatch} = React.useContext(AuthContext);
 import { showToast } from "../globalContext";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { AuthContext } from "../authContext";
 
 const AdminDashboardPage = () => {
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [count, setCount] = useState(1);
+  const { dispatch} = React.useContext(AuthContext);
 
   const navigate = useNavigate();
 
@@ -38,41 +40,17 @@ const AdminDashboardPage = () => {
     getVideos();
   }, [])
 
-  const moveRow = useCallback(
-    (dragIndex, hoverIndex) => {
-      setVideos((prevData) => {
-        const newData = [...prevData];
-        const dragRow = newData[dragIndex];
-        newData.splice(dragIndex, 1);
-        newData.splice(hoverIndex, 0, dragRow);
-        return newData;
-      });
-    },
-    [setVideos]
-  );
-  const [, drop] = useDrop({
-    accept: 'ROW',
-    drop: (item, monitor) => {
-      const dragIndex = item.index;
-      const hoverIndex = videos.length;
-      console.log(hoverIndex);
-      moveRow(dragIndex, hoverIndex);
-      console.log(monitor);
-    },
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-    }),
-  });
-
-  const ROW_HEIGHT = 144;
-  const getHoverIndex = (monitor, component) => {
-    const dragIndex = monitor.getItem().index;
-    const hoverBoundingRect = component.getBoundingClientRect();
-    const hoverClientY = monitor.getClientOffset().y - hoverBoundingRect.top;
-    const hoverIndex = Math.floor(hoverClientY / ROW_HEIGHT);
-  
-    return hoverIndex;
+  const moveItem = (dragIndex, hoverIndex) => {
+    const draggedItem = videos[dragIndex];
+    setVideos((prevItems) => {
+      const newItems = [...prevItems];
+      newItems.splice(dragIndex, 1);
+      newItems.splice(hoverIndex, 0, draggedItem);
+      return newItems.map((item, index) => ({ ...item, row: index + 1 }));
+    });
   };
+
+  
 
   const logoutFunc = () => {
     showToast(dispatch, "Logged in");
@@ -104,6 +82,7 @@ const AdminDashboardPage = () => {
         </div>
       </div>
       <main>
+        <DndProvider backend={HTML5Backend}>
                 <table className="w-full md:table-fixed" >
                   <thead>
                     
@@ -127,9 +106,9 @@ const AdminDashboardPage = () => {
                     <p>Loading...</p>
                   ) : (
 
-                  <tbody ref={drop}>
+                  <tbody>
                     {videos?.map((video, index) => (
-                      <DraggableTableRow key={video.id} video={video} index={index}/>
+                      <DraggableTableRow key={video.id} video={video} index={index} moveItem= {moveItem}/>
                      ))}
                   </tbody>
                   )}
@@ -165,6 +144,7 @@ const AdminDashboardPage = () => {
                     }
                   }>NEXT</button>
                 </div>
+                </DndProvider>
       </main>
     </div>
   );

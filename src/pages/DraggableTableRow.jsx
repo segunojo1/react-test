@@ -1,20 +1,37 @@
 import React from 'react';
-import { useDrag } from 'react-dnd';
+import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableTableRow = ({ video, index }) => {
-    const [{ isDragging }, drag] = useDrag({
-        type: 'ROW',
-        item: {type: 'ROW', index, video},
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    });
+const DraggableTableRow = ({ video, index, moveItem }) => {
+    // const [{ isDragging }, drag] = useDrag({
+    //     type: 'ROW',
+    //     item: {type: 'ROW', index, video},
+    //     collect: (monitor) => ({
+    //         isDragging: monitor.isDragging(),
+    //     }),
+    // });
+    const ItemTypes = {
+        ITEM: 'item',
+      };
+
+    const [, drag] = useDrag({
+        type: ItemTypes.ITEM,
+        item: { index },
+      });
+    
+      const [, drop] = useDrop({
+        accept: ItemTypes.ITEM,
+        hover: (draggedItem) => {
+          if (draggedItem.index !== index) {
+            moveItem(draggedItem.index, index);
+            draggedItem.index = index;
+          }
+        },
+      });
 
     return (
         <tr
-            ref={drag}
-            className={`border-t border-custom-color1 cursor-pointer transition delay-100 hover:bg-white-200 py-4 border-[1px] border-[#696969] rounded-[10px] ${isDragging ? 'opacity-50' : ''
-                }`}
+        ref={(node) => drag(drop(node))}
+            className={`border-t border-custom-color1 cursor-pointer transition delay-100 hover:bg-white-200 py-4 border-[1px] border-[#696969] rounded-[10px] `}
         >
             <td className="max-w-[10vw] md:full tracking-wide font-manropeL text-base text-white px-6 py-6">
                {video.id}

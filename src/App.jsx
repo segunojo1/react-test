@@ -9,7 +9,6 @@ function App() {
   return (
     <AuthProvider>
       <GlobalProvider>
-        
         <Router>
           <Main />
         </Router>
