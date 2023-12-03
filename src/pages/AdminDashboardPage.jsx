@@ -118,8 +118,8 @@ const AdminDashboardPage = () => {
                   currentPage={currentPage}
                   totalPages={data.total_pages}
                   setCurrentPage={setCurrentPage}
-                /> */}
-                <div className="m-auto">
+                /> */} 
+                <div className="m-auto w-fit">
                   <button className="bg-white mr-[2rem] p-2 border-none cursor-pointer" onClick={async () =>  {
                           let sdk = new MkdSDK();
                           setCount(count -1);
