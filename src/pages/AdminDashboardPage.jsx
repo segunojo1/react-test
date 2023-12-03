@@ -44,8 +44,8 @@ const AdminDashboardPage = () => {
     const draggedItem = videos[dragIndex];
     setVideos((prevItems) => {
       const newItems = [...prevItems];
-      newItems.splice(dragIndex, 1);
-      newItems.splice(hoverIndex, 0, draggedItem);
+      const [dragRow] = newItems.splice(dragIndex, 1);
+      newItems.splice(hoverIndex, 0, dragRow);
       console.log(newItems);
       return newItems.map((item) => ({ ...item}));
     });
@@ -54,7 +54,7 @@ const AdminDashboardPage = () => {
   
 
   const logoutFunc = () => {
-    showToast(dispatch, "Logged in");
+    showToast(dispatch, "Logged out");
           dispatch({
             type: "LOGOUT",
             payload: {
@@ -62,9 +62,11 @@ const AdminDashboardPage = () => {
             },
           });
           navigate('/admin/login');
+          localStorage.removeItem("token");
   }
   
   return (
+    <DndProvider backend={HTML5Backend}>
     <div className="bg-black ">
       <nav className="w-[100%] bg-black h-[96px] flex justify-between items-center">
         <h1 className=" font-black text-5xl text-white">APP</h1>
@@ -83,7 +85,7 @@ const AdminDashboardPage = () => {
         </div>
       </div>
       <main>
-        <DndProvider backend={HTML5Backend}>
+        
                 <table className="w-full md:table-fixed" >
                   <thead>
                     
@@ -145,9 +147,9 @@ const AdminDashboardPage = () => {
                     }
                   }>NEXT</button>
                 </div>
-                </DndProvider>
       </main>
     </div>
+    </DndProvider>
   );
 };
 
